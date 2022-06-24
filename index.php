@@ -56,7 +56,9 @@ include_once 'inc/functions.php';
 
                     <select class="status" name="status">
                         <option>All</option>
+                        <?php if (isAdmin()): ?>
                         <option value="pending">Pending</option>
+                        <?php endif; ?>
                         <option value="publish">Published</option>
                         <option value="answered">Answered</option>
                     </select>
@@ -89,7 +91,6 @@ include_once 'inc/functions.php';
                 <!-----------------------questions------------------->
                 <?php foreach ($questions as $value): ?>
                     <div class="question">
-
                         <div class="quContent" id="<?php echo 'q' . $value['id'] ?>" onclick="<?php echo QA_HOME_URL . '?qid='.$value['id'] ?>">
                             <span class="status <?php echo $value['status'] ?>"></span>
                             <?php if (isAdmin()): ?>
@@ -105,6 +106,16 @@ include_once 'inc/functions.php';
                             <span class="qtex"><?php echo $value['text'] ?></span>
                             <span class="time"><?php echo $value['create_date']; ?></span>
 
+                            <?php  if(isAdmin() && isset($_GET['answer'])):?>
+                                    <div class="addAnswer">
+                                        <form action="" method="post"></form>
+                                        <textarea class="txtAnswer" name="txtAnswer"></textarea>
+                                        <button name="submitQuestion" class="inputbtn">
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                <?php else : ?>
+
                             <!----------------answers-------------------->
                             <?php if(getAnswers($value['id'])): ?>
                             <?php foreach (getAnswers($value['id']) as $ans):?>
@@ -118,6 +129,7 @@ include_once 'inc/functions.php';
                                 <span class="ans">Not Answered !!!</span>
                             </div>
                             <?php endif;?>
+                            <?php endif; ?>
                         </div>
 
 

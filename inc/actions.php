@@ -27,7 +27,19 @@ if (isset($_GET['exit'])){
 }
 //---- get questions and page ination-----------
 if (isset($_GET['page'])){
-    $questions = getQuestion($_GET['page'],$numPage);
+    $questions = getQuestion($_GET['page'],$numPage,$errorMasage);
+
 }else{
-    $questions = getQuestion(1,$numPage);
+     $questions = getQuestion(1,$numPage,$errorMasage);
+}
+
+//----------delete Questios------------------
+if (isset($_GET['delete'])){
+    deletQuestion($_GET['delete']);
+    $successMasage .= "Question removed successfully";
+}
+
+//-------------published---------------------
+if (isset($_GET['publish'])){
+    published($_GET['publish']);
 }
