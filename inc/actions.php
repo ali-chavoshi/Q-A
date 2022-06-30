@@ -43,3 +43,16 @@ if (isset($_GET['delete'])){
 if (isset($_GET['publish'])){
     published($_GET['publish']);
 }
+
+//-------------add answer admin---------------
+if (isset($_POST['adminAsnwer'],$_POST['ansId'])){
+    if (addAnswer($_POST['ansId'],$_POST['adminAsnwer'],$errorMasage)){
+        $successMasage .= "Your answer was successfully registered";
+    }
+}
+//--------------delete answers-----------------
+
+if (isset($_GET['asnswerId'])){
+    deletAnswer($_GET['asnswerId'],$errorMasage);
+    $successMasage .= "Your answer was successfully deleted";
+}

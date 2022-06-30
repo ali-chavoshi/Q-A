@@ -72,7 +72,26 @@ include_once 'inc/functions.php';
 
         </div>
         <div class="body">
+            <!--------------------------admin answer input------------------------------>
+            <?php if (isAdmin()): ?>
+            <div class="adminAnswer">
+                <?php if (isset($_GET['answer'])): ?>
+                <strong class="titleAdmAnswer">Answer <?php echo $_GET['name'] ?> Question</strong>
+                <?php else: ?>
+                    <strong class="titleAdmAnswer">Click On The Answer Button</strong>
 
+                <?php endif;?>
+                <form action="" method="post" class="formQuestion">
+                    <textarea name="adminAsnwer" class="inputQ" cols="20" rows="5"></textarea>
+                    <?php if (isset($_GET['answer'])): ?>
+                    <input type="hidden" name="ansId" value="<?php echo $_GET['answer'] ?>">
+                    <?php endif; ?>
+
+                    <button name="submitAnswer" class="inputbtn">SUBMIT</button>
+                </form>
+            </div>
+            <?php else: ?>
+            <!---------------------------submit question--------------------------------->
             <div class="inputQuestion">
                 <form action="" method="post" class="formQuestion">
                     <strong class="inputTitle">Ask a question</strong>
@@ -86,6 +105,7 @@ include_once 'inc/functions.php';
                     </button>
                 </form>
             </div>
+            <?php endif; ?>
 
             <div class="content">
                 <!-----------------------questions------------------->
@@ -96,7 +116,7 @@ include_once 'inc/functions.php';
                             <?php if (isAdmin()): ?>
                                 <div class="adminbtn">
                                     <a class="adminBtnA" id="answer"
-                                       href="<?php echo QA_HOME_URL . '?answer=' . $value['id'] ?>">ANSWER</a>
+                                       href="<?php echo QA_HOME_URL . '?answer=' . $value['id'] .'&name='.$value['uname']?>">ANSWER</a>
                                     <a class="adminBtnA" id="delet"
                                        href="<?php echo QA_HOME_URL . '?delete=' . $value['id'] ?>">DELET</a>
                                     <a class="adminBtnA" id="publish"
@@ -106,15 +126,7 @@ include_once 'inc/functions.php';
                             <span class="qtex"><?php echo $value['text'] ?></span>
                             <span class="time"><?php echo $value['create_date']; ?></span>
 
-                            <?php  if(isAdmin() && isset($_GET['answer'])):?>
-                                    <div class="addAnswer">
-                                        <form action="" method="post"></form>
-                                        <textarea class="txtAnswer" name="txtAnswer"></textarea>
-                                        <button name="submitQuestion" class="inputbtn">
-                                            SUBMIT
-                                        </button>
-                                    </div>
-                                <?php else : ?>
+
 
                             <!----------------answers-------------------->
                             <?php if(getAnswers($value['id'])): ?>
@@ -122,6 +134,7 @@ include_once 'inc/functions.php';
                             <div class="answer">
                                 <span class="ans"><?php echo $ans['text'] ?></span>
                                 <span class="timeans"><?php echo $ans['create_date']; ?></span>
+                                <a class="adminBtnA" href="<?php echo QA_HOME_URL.'?asnswerId='.$ans['id'] ?> ">DELETE</a>
                             </div>
                             <?php endforeach; ?>
                             <?php else: ?>
@@ -129,7 +142,6 @@ include_once 'inc/functions.php';
                                 <span class="ans">Not Answered !!!</span>
                             </div>
                             <?php endif;?>
-                            <?php endif; ?>
                         </div>
 
 

@@ -3,7 +3,7 @@
 
 //  website information
 define('QA_TITLE'," Question Answering System");
-define('QA_HOME_URL', "http://localhost/q&s/");
+define('QA_HOME_URL', "http://localhost/Q-A/");
 define('QA_QUESTION_PER_PAGE', 4);
 define('QA_QURSTION_MIN_LENTH', 10);
 define('QA_UNAME_MIN_LENTH', 3);
@@ -21,8 +21,8 @@ error_reporting(E_ALL);
 
 // Host information
 $dbHost = "localhost";
-$dbUser = "qa-user";
-$dbPass = "ali2878@chwo";
+$dbUser = "root";
+$dbPass = "";
 $dbName = "project_qa";
 
 $db = new mysqli($dbHost, $dbUser, $dbPass, $dbName);
@@ -41,4 +41,4 @@ $db->query("SET NAMES UTF8;");
 // define our table for usage in code
 $db->questionTable = "questions";
 $db->answersTable = "answers";
-$db->userTable = "users";
+$db->adminTable = "admin";

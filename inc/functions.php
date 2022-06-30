@@ -36,15 +36,16 @@ function addquestion($uName, $uMail, $uPhone, $uQuestion, &$errMassage = null)
 {
     global $db;
     list($uname, $umail, $uphone, $uquestion) = array($uName, $uMail, $uPhone, $uQuestion);
-    $result = $db->prepare("INSERT INTO `$db->questionTable` (`uname`,`uemail`,`umobile`,`text`) VALUES (? ,? , ?, ?);");
-    $result->bind_param("ssss", $uname, $umail, $uphone, $uquestion);
-    $result->execute();
+    $result = $db->prepare("INSERT INTO `questions` (uname,uemail,umobile,text) VALUES (? ,? ,?, ?)");
     if ($result) {
+        $result->bind_param("ssss", $uname, $umail, $uphone, $uquestion);
+        $result->execute();
         return true;
+    } else {
+        $errMassage = 'An error occurred while registering your question !!!';
+        return false;
     }
-    $result->close();
-    $errMassage = 'An error occurred while registering your question !!!';
-    return false;
+
 
 }
 
@@ -94,17 +95,14 @@ function sanitize(&$input)
     return $output;
 }
 
-// Login------------------------------------------------------------------
+// -----------------------------------Login-----------------------------------------
+
 function dologin($name, $lastName, $password, &$successMasage = null)
 {
     global $db;
     list($name, $lastName, $password) = array($name, $lastName, $password);
-    $stmnt = $db->prepare("SELECT * FROM `$db->userTable` WHERE name=? AND lastname=? AND password=?;");
-    $stmnt->bind_param('sss', $name, $lastName, $password);
-    $stmnt->execute();
-    $result = $stmnt->get_result();
-    $rows = $result->fetch_all();
-    if (sizeof($rows) != 0) {
+    $stmnt = $db->query("SELECT * FROM `" . $db->adminTable . "` WHERE name='" . $name . "' and lastname='" . $lastName . "' and password='" . $password . "';");
+    if ($stmnt) {
         $_SESSION['username'] = $name;
         $_SESSION['login'] = true;
         $_SESSION['userid'] = $_SERVER['REMOTE_ADDR'];
@@ -131,43 +129,42 @@ function logAut()
 }
 
 //-------------------get questions----------
-function getQuestion($page=1, &$numPages = null , &$errorMasage=null)
+function getQuestion($page = 1, &$numPages = null, &$errorMasage = null)
 {
     global $db;
 
     $start = ($page - 1) * QA_QUESTION_PER_PAGE;
     $end = QA_QUESTION_PER_PAGE;
 
-/* ----------------------------admin------------------------------------*/
+    /* ----------------------------admin------------------------------------*/
     if (isAdmin()) {
 
-        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status']!='All') {
+        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status'] != 'All') {
             $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
             $status = $_GET['status'];
-            $result = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
+            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
             if ($result) {
                 $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%'");
+                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%'");
                 $rows = $numRowsStmnt->fetch_all();
                 $countResult = sizeof($rows);
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
-            }else{
+            } else {
                 $errorMasage .= "No query found for your search !!";
             }
 
-        } elseif (isset($_GET['status'])&& $_GET['status']!='All') {
-            $result = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $_GET['status'] . "' LIMIT $start,$end");
+        } elseif (isset($_GET['status']) && $_GET['status'] != 'All') {
+            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' LIMIT $start,$end");
             if ($result) {
                 $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $_GET['status']."'");
+                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "'");
                 $rows = $numRowsStmnt->fetch_all();
                 $countResult = sizeof($rows);
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
 
             }
-
 
 
         } elseif (isset($_GET['srchInp']) && $_GET['srchInp'] != null) {
@@ -181,11 +178,11 @@ function getQuestion($page=1, &$numPages = null , &$errorMasage=null)
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
 
-            }else{
+            } else {
                 $errorMasage .= "No query found for your search !!";
 
             }
-        }else{
+        } else {
             $result = $db->query("SELECT * FROM `$db->questionTable` LIMIT $start , $end ");
             $result->fetch_all(1);
             $numRowsstmnt = $db->query("SELECT * FROM `$db->questionTable`");
@@ -195,37 +192,36 @@ function getQuestion($page=1, &$numPages = null , &$errorMasage=null)
             return $result;
         }
 
-/* ------------------------------- not admin------------------------------------------------*/
+        /* ------------------------------- not admin------------------------------------------------*/
     } else {
 
-        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status']!='All') {
+        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status'] != 'All') {
             $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
             $status = $_GET['status'];
-            $result = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $status . "'AND status!='pending' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
+            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "'AND status!='pending' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
             if ($result) {
                 $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $status . "' AND status!='pending' AND text LIKE '%" . $srchInp . "%'");
+                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND status!='pending' AND text LIKE '%" . $srchInp . "%'");
                 $rows = $numRowsStmnt->fetch_all();
                 $countResult = sizeof($rows);
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
-            }else{
+            } else {
                 $errorMasage .= "No query found for your search !!";
 
             }
 
-        } elseif (isset($_GET['status'])&& $_GET['status']!='All') {
-            $result = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $_GET['status'] . "' AND status!='pending' LIMIT $start,$end");
+        } elseif (isset($_GET['status']) && $_GET['status'] != 'All') {
+            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' AND status!='pending' LIMIT $start,$end");
             if ($result) {
                 $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `".$db -> questionTable."` WHERE status='" . $_GET['status']."' AND status!='pending'");
+                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' AND status!='pending'");
                 $rows = $numRowsStmnt->fetch_all();
                 $countResult = sizeof($rows);
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
 
             }
-
 
 
         } elseif (isset($_GET['srchInp']) && $_GET['srchInp'] != null) {
@@ -239,13 +235,13 @@ function getQuestion($page=1, &$numPages = null , &$errorMasage=null)
                 $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
                 return $result;
 
-            }else{
+            } else {
                 $errorMasage .= "No query found for your search !!";
 
             }
-        }else{
+        } else {
             $stmnt = $db->query("SELECT * FROM `$db->questionTable` WHERE status !='pending' LIMIT $start,$end ;");
-            if ($stmnt){
+            if ($stmnt) {
                 $result = $stmnt->fetch_all(1);
                 $numRowsStmnt = $db->query("SELECT * FROM `$db->questionTable` WHERE status !='pending';");
                 $numRows = $numRowsStmnt->fetch_all();
@@ -256,7 +252,8 @@ function getQuestion($page=1, &$numPages = null , &$errorMasage=null)
 
         }
 
-    }return false;
+    }
+    return false;
 }
 
 // ------------get answers-------------
@@ -273,37 +270,57 @@ function getAnswers($qid)
 }
 
 
-// ------------add answer------------------
-function addAnswer($id,$txtA){
+// -----------------------------add answer-------------------------------
+
+function addAnswer($id, $txtA, &$errorMassage)
+{
     global $db;
-    $stmnt = $db -> prepare("INSERT INTO `".$db->answersTable."` (`id`, `qid`, `text`, `create_date`) VALUES (NULL, ?, ?, CURRENT_TIMESTAMP" );
-    $stmnt -> bind_param('is',$id,$txtA);
-    $stmnt ->execute();
-    if ($stmnt){
+    $admName = $_SESSION['username'];
+    $stmnt = $db->prepare("INSERT INTO `answers`(`qid`, `text`, `admname`) VALUES (?,?,?)");
+    if ($stmnt) {
+        $stmnt->bind_param("iss",$id,$txtA,$admName);
+        $stmnt->execute();
         return true;
-    }else{
+    } else {
+        $errorMassage .= "An error occurred while registering your Answer !!";
         return false;
     }
 }
-//---------------delete question---------------
-function deletQuestion($id){
+function deletAnswer($id,$errorMasage){
     global $db;
-    $stmnt = $db -> query("DELETE FROM `".$db->questionTable."` WHERE id=".$id.";");
+    $stmnt = $db->query("DELETE FROM `".$db->answersTable."` WHERE id=".$id.";");
     if ($stmnt){
         return true;
     }else{
+        return  false;
+        $errorMasage .= "An Error ccourred While Deleting Your Answer!!!";
+    }
+}
+
+//----------------------------delete question------------------------------
+
+function deletQuestion($id)
+{
+    global $db;
+    $stmnt = $db->query("DELETE FROM `" . $db->questionTable . "` WHERE id=" . $id . ";");
+    if ($stmnt) {
+
+        return true;
+    } else {
         return false;
     }
 
 }
 
-//-----------------published--------------------
-function published($id){
+//------------------------------published----------------------------------
+
+function published($id)
+{
     global $db;
-    $stmnt = $db -> query("UPDATE `".$db->questionTable."`SET status = 'publish' WHERE `".$db->questionTable."`.`id` =".$id.";");
-    if ($stmnt){
+    $stmnt = $db->query("UPDATE `" . $db->questionTable . "`SET status = 'publish' WHERE `" . $db->questionTable . "`.`id` =" . $id . ";");
+    if ($stmnt) {
         return true;
-    }else {
+    } else {
         return false;
     }
 }
