@@ -31,9 +31,8 @@ include_once 'inc/functions.php';
     if (isAdmin()): ?>
     <div class='admin'>
         <p class='pAdmin'>Hello dear </p>
-        <strong class='pAdmin'><?php echo $_SESSION['username']; ?></strong>;
-        <a class='exit' href="<?php echo QA_HOME_URL . '?exit=1'; ?>">EXIT</a>";
-        }
+        <strong class='pAdmin'><?php echo $_SESSION['username']; ?></strong>
+        <a class='exit' href="<?php echo QA_HOME_URL . '?exit=1'; ?>">EXIT</a>
         <?php endif; ?>
         <?php
         if (isAdmin() == false): ?>
@@ -112,6 +111,7 @@ include_once 'inc/functions.php';
                 <?php foreach ($questions as $value): ?>
                     <div class="question">
                         <div class="quContent" id="<?php echo 'q' . $value['id'] ?>" onclick="<?php echo QA_HOME_URL . '?qid='.$value['id'] ?>">
+                            <div class="questionline">
                             <span class="status <?php echo $value['status'] ?>"></span>
                             <?php if (isAdmin()): ?>
                                 <div class="adminbtn">
@@ -125,6 +125,7 @@ include_once 'inc/functions.php';
                             <?php endif; ?>
                             <span class="qtex"><?php echo $value['text'] ?></span>
                             <span class="time"><?php echo $value['create_date']; ?></span>
+                            </div>
 
 
 
@@ -132,9 +133,10 @@ include_once 'inc/functions.php';
                             <?php if(getAnswers($value['id'])): ?>
                             <?php foreach (getAnswers($value['id']) as $ans):?>
                             <div class="answer">
+                                <a class="adminBtnA2" href="<?php echo QA_HOME_URL.'?asnswerId='.$ans['id'] ?> ">DELETE</a>
+
                                 <span class="ans"><?php echo $ans['text'] ?></span>
                                 <span class="timeans"><?php echo $ans['create_date']; ?></span>
-                                <a class="adminBtnA" href="<?php echo QA_HOME_URL.'?asnswerId='.$ans['id'] ?> ">DELETE</a>
                             </div>
                             <?php endforeach; ?>
                             <?php else: ?>

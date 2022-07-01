@@ -280,6 +280,7 @@ function addAnswer($id, $txtA, &$errorMassage)
     if ($stmnt) {
         $stmnt->bind_param("iss",$id,$txtA,$admName);
         $stmnt->execute();
+        $state= $db->query("UPDATE `" . $db->questionTable . "`SET `status` = 'answered' WHERE `id` =" . $id . ";");
         return true;
     } else {
         $errorMassage .= "An error occurred while registering your Answer !!";

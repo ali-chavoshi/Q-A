@@ -1,6 +1,6 @@
 
 body {
-    background-image: url("../images/space.jpg");
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 39%, rgba(0,212,255,1) 100%);
     font-family: IRANYekan;
 }
 
@@ -36,7 +36,7 @@ body {
     text-align: center;
     padding: 20px;
     border-radius: 10px 10px 0px 0px;
-    background-color: #51718b75;
+    background: linear-gradient(90deg, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 39%, rgba(2,0,36,1) 100%);
 }
 
 .search {
@@ -78,10 +78,11 @@ body {
 input.serchBar {
     background-color: transparent;
     border: solid 1px white;
-    border-radius: 5px;
+    border-radius: 10px;
     height: 26px;
-    outline-color: blue;
+    padding-left: 2px;
     color: #FFFFFF;
+
 }
 /*Search Bar*/
 input.serchBar::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -89,22 +90,23 @@ input.serchBar::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     opacity: 1; /* Firefox */
     padding: 5px;
 }
-input.serchBar:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: #FFFFFF;
-    padding: 5px;
-}
+.serchBar:focus{
+    border-color: #0400ff ;
+    border-radius: 20px;
+    transition: .5s;
 
-input.serchBar::-ms-input-placeholder { /* Microsoft Edge */
-    color: #FFFFFF;
-    padding: 5px;
+}
+.serchBar:focus::placeholder {
+    opacity: 0;
+    transition:.3s;
 }
 /*Select Input*/
 select.status {
     background-color: #215dfc;
     border: none;
     color: white;
-    padding: 7px;
-    border-radius: 5px;
+    padding: 8px;
+    border-radius: 7px;
     outline: none;
     display:inline-block;
 }
@@ -115,7 +117,7 @@ select.status {
     border: none;
     color: #fff;
     background-image: linear-gradient(30deg, #0400ff, #4ce3f7);
-    border-radius: 4px;
+    border-radius: 7px;
     background-size: 100% auto;
     font-family: inherit;
     font-size: 12px;
@@ -148,7 +150,7 @@ select.status {
     flex-wrap: wrap;
     font-size: 17px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgb(255 255 255 / 88%);
     border-radius: 0px 0px 16px 16px;
     box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
     backdrop-filter: blur(5px);
@@ -165,6 +167,7 @@ select.status {
 }
 .formQuestion {
     padding: 20px;
+    border-right: solid 2px #939090;
 
 }
 
@@ -175,15 +178,16 @@ lable {
 
 .inputQ {
     line-height: 28px;
-    border: 2px solid #ede9e9;
     border-radius: 11px;
     padding: 0.2rem 4px;
     outline: none;
+    border: none;
     width: -webkit-fill-available;
     margin-top: 8px;
     text-align: start;
-    background-color: transparent;
-    color: #FFFFFF;
+    background-color: #ffffffad;
+    color: #454545;
+    box-shadow: 0px 0px 8px 0px #afacacad;
     transition: .3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -191,11 +195,12 @@ lable {
     outline: none;
     padding: .2rem 1rem;
     border-radius: 1rem;
-    border-color: #7a9cc6;
+    box-shadow: 0px 0px 8px 2px rgba(157, 155, 155, 0.68);
 }
 
 .inputQ::placeholder {
-    color: #ede9e9;
+    color: #8d8d8d
+;
 }
 
 .inputQ:focus::placeholder {
@@ -228,7 +233,7 @@ lable {
 .inputTitle {
     display: block;
     text-align: start;
-    color: #FFFFFF;
+    color: #454545;
     padding: 5px;
 }
 .formLogin {
@@ -273,6 +278,7 @@ a.exit {
     color: aqua;
     font-size: 20px;
     margin-left: 10px;
+    float: right;
 }
 a.login {
     color: white;
@@ -297,21 +303,25 @@ a.exit:hover{
 .quContent {
     padding: 9px;
 }
+.questionline {
+    margin-bottom: 15px;
+    margin-top: 5px;
+}
 span.status {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
+    height: 31px;
+    width: 31px;
     display: inline-block;
     float: left;
 }
 .pending{
-    background-color: aquamarine;
+    background-image: url("../images/pending.png");
 }
 .answered{
-    background-color: green;
+    background-image: url("../images/answered.png");
+
 }
 .publish {
-    background-color: darkred;
+    background-image: url("../images/published.png");
 
 }
 span.time {
@@ -346,6 +356,20 @@ span.ans {
     border-radius: 5px;
 }
 .adminBtnA:hover{
+    color: #444;
+    background-color: #f1f0f0;
+    box-shadow: 0px 0px 8px 0px rgba(136, 136, 136, 0.53);
+}
+.adminBtnA2 {
+    text-decoration: none;
+    font-size: 11px;
+    color: white;
+    background-color: #01cefb;
+    border-radius: 5px;
+    float: left;
+    padding: 5px;
+}
+.adminBtnA2:hover{
     color: #444;
     background-color: #f1f0f0;
     box-shadow: 0px 0px 8px 0px rgba(136, 136, 136, 0.53);
