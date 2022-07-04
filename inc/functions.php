@@ -129,7 +129,69 @@ function logAut()
 }
 
 //-------------------get questions----------
-function getQuestion($page = 1, &$numPages = null, &$errorMasage = null)
+function getQuestion($status,$search,$page,&$numQuestion=0){
+    global $db;
+    $start = ($page-1) * QA_QUESTION_PER_PAGE;
+    $offset = QA_QUESTION_PER_PAGE;
+    if($status == 'all'){
+        if(!isAdmin()){
+            $whereStr = "status!='pending'";
+        }else{
+            $whereStr = 1;
+        }
+        if ($search!=null){
+            $sql = "SELECT * FROM $db->questionTable WHERE $whereStr and text like '%$search%' order by create_date desc limit $start,$offset;";
+            $countSql ="SELECT count(*) as c from $db->questionTable WHERE $whereStr and text like '%$search%'";
+        }else {
+            $sql = "SELECT * FROM $db->questionTable where $whereStr order by create_date desc limit $start,$offset;";
+            $countSql = "SELECT count(*) as c FROM $db->questionTable where $whereStr";
+        }
+    }elseif (isAdmin() or (in_array(getValidstsatus($status),array('publish','answered')))){
+        if ($search!=null){
+            $sql = "SELECT * FROM $db->questionTable WHERE status='$status' and text like '%$search%' order by desc limit $start,$offset";
+            $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status' and text like '%$search%'";
+        }else{
+            $sql ="SELECT * FROM $db->questionTable WHERE status='$status' order by desc limit $start,$offset";
+            $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status'";
+        }
+    }else{
+        $sql = "SELECT * FROM $db->questionTable WHERE status!='pending' order by desc limit $start,$offset";
+        $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status!='pending'";
+    }
+    $result = $db-> query($sql);
+    if ($result){
+        $question = $result->fetch_all(1);
+        $numQuestion = $db -> query($countSql)->fetch_object()->c;
+        return $question;
+    }
+    return null;
+
+
+}
+
+
+//-------------------get valid status-------------------------------
+function getValidstsatus($status){
+    if (isValidStatus($status)){
+        return true;
+    }else{
+        return "all";
+    }
+}
+
+function isValidStatus($status){
+    $statusArr = array ('pending','publish','answered');
+    if (in_array($status,$statusArr)){
+        return true;
+    }else {
+        return false;
+    }
+}
+
+
+
+//-------------------get question old -----------
+function getQuestions($page = 1, &$numPages = null, &$errorMasage = null)
 {
     global $db;
 

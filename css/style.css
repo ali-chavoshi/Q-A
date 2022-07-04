@@ -1,7 +1,10 @@
-
+@font-face {
+    font-family: Yekan;
+    src: url(../fonts/Yekan.woff);
+}
 body {
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 39%, rgba(0,212,255,1) 100%);
-    font-family: IRANYekan;
+    font-family: Yekan;
 }
 
 .container {
@@ -121,7 +124,7 @@ select.status {
     background-size: 100% auto;
     font-family: inherit;
     font-size: 12px;
-    padding: 9px 10px;
+    padding: 5px 10px;
 }
 
 .srchbtn:hover {
@@ -283,6 +286,7 @@ a.exit {
 a.login {
     color: white;
     text-decoration: none;
+    font-size: 17px;
 }
 a.login:hover{
     color: #215dfc;
@@ -327,15 +331,22 @@ span.status {
 span.time {
     font-size: 13px;
     color: #605f5f;
+    background-color: #e7e2e2;
+    border-radius: 5px;
+    padding: 0px 4px;
 }
 span.timeans {
     font-size: 11px;
     color: #605f5f;
+    background-color: white;
+    padding: 0px 4px;
+    border-radius: 5px;
 }
 .answer {
-    background-color: #c6ffe542;
-    padding: 2px;
-    margin: 2px;
+    background-color: #e7e2e2;
+    padding: 1px 10px;
+    margin-bottom: 4px;
+    border-radius: 6px;
 }
 span.ans {
     color: #666666;
@@ -349,10 +360,10 @@ span.ans {
 }
 .adminBtnA {
     text-decoration: none;
-    font-size: 12px;
+    font-size: 10px;
     color: white;
     background-color: #215dfc;
-    padding: 2px;
+    padding: 1px 5px;
     border-radius: 5px;
 }
 .adminBtnA:hover{
@@ -362,12 +373,12 @@ span.ans {
 }
 .adminBtnA2 {
     text-decoration: none;
-    font-size: 11px;
+    font-size: 10px;
     color: white;
     background-color: #01cefb;
     border-radius: 5px;
     float: left;
-    padding: 5px;
+    padding: 1px 5px;
 }
 .adminBtnA2:hover{
     color: #444;
@@ -388,10 +399,10 @@ span.ans {
     background : #ffffff;
 }
 .titleAdmAnswer{
-    color: white;
+    color: #454545;
     margin-top: 20px;
     display: inline-block;
-    font-size: 14px;
+    font-size: 17px;
 }
 .erronAdmin {
     margin: 3px;
@@ -433,7 +444,7 @@ span.ans {
 a.page {
     color: white;
     background-color: #215dfc;
-    padding: 0px 9px;
+    padding: 0px 11px;
     border-radius: 5px;
     text-decoration: none;
 }
@@ -444,4 +455,11 @@ a.page:hover{
 }
 .pages {
     margin: 10px;
+}
+.currentPage {
+    color: white;
+    background-color: #837e7e;
+    padding: 0px 11px;
+    border-radius: 5px;
+    text-decoration: none;
 }

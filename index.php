@@ -54,7 +54,7 @@ include_once 'inc/functions.php';
                     </button>
 
                     <select class="status" name="status">
-                        <option>All</option>
+                        <option value="all">All</option>
                         <?php if (isAdmin()): ?>
                         <option value="pending">Pending</option>
                         <?php endif; ?>
@@ -62,7 +62,7 @@ include_once 'inc/functions.php';
                         <option value="answered">Answered</option>
                     </select>
                     <div class="serchBarMain">
-                        <input class="serchBar" name="srchInp" placeholder="search">
+                        <input class="serchBar" name="search" placeholder="search">
 
                     </div>
                     </form>
@@ -108,9 +108,13 @@ include_once 'inc/functions.php';
 
             <div class="content">
                 <!-----------------------questions------------------->
+                <?php if ($questions!=null): ?>
                 <?php foreach ($questions as $value): ?>
                     <div class="question">
                         <div class="quContent" id="<?php echo 'q' . $value['id'] ?>" onclick="<?php echo QA_HOME_URL . '?qid='.$value['id'] ?>">
+                            <div class="nameUser">
+                                <strong><?php echo ": ". $value['uname'] ?></strong>
+                            </div>
                             <div class="questionline">
                             <span class="status <?php echo $value['status'] ?>"></span>
                             <?php if (isAdmin()): ?>
@@ -118,7 +122,7 @@ include_once 'inc/functions.php';
                                     <a class="adminBtnA" id="answer"
                                        href="<?php echo QA_HOME_URL . '?answer=' . $value['id'] .'&name='.$value['uname']?>">ANSWER</a>
                                     <a class="adminBtnA" id="delet"
-                                       href="<?php echo QA_HOME_URL . '?delete=' . $value['id'] ?>">DELET</a>
+                                       href="<?php echo QA_HOME_URL . '?delete=' . $value['id'] ?>">DELETE</a>
                                     <a class="adminBtnA" id="publish"
                                        href="<?php echo QA_HOME_URL . '?publish=' . $value['id'] ?>">PUBLISH</a>
                                 </div>
@@ -133,7 +137,9 @@ include_once 'inc/functions.php';
                             <?php if(getAnswers($value['id'])): ?>
                             <?php foreach (getAnswers($value['id']) as $ans):?>
                             <div class="answer">
+                                <?php if (isAdmin()): ?>
                                 <a class="adminBtnA2" href="<?php echo QA_HOME_URL.'?asnswerId='.$ans['id'] ?> ">DELETE</a>
+                                <?php endif; ?>
 
                                 <span class="ans"><?php echo $ans['text'] ?></span>
                                 <span class="timeans"><?php echo $ans['create_date']; ?></span>
@@ -149,13 +155,46 @@ include_once 'inc/functions.php';
 
                     </div>
                 <?php endforeach; ?>
+                <?php else: ?>
+                <div class="notFoundAnswer">
+                    <strong>No answer found!!</strong>
+                </div>
+                <?php endif; ?>
 
                 <!--------------------pages---------------------------->
                 <?php if ($numPage > 1):?>
                 <div class="pages">
-                    <?php for ($i=1; $i<=$numPage; $i++) : ?>
-                    <a href="<?php echo QA_HOME_URL . '?page='.$i ?>" class="page"><?php echo $i;?></a>
+                    <?php if ($_GET['page']>1): ?>
+                        <a href="<?php echo QA_HOME_URL . '?page='.($_GET['page'] -1)?>" class="page"><</a>
+                    <?php else: ?>
+                        <strong  class="currentPage"><</strong>
+                    <?php endif; ?>
+
+                    <?php if ($numPage>3): ?>
+                      <?php for ($i=1; $i<=3; $i++) : ?>
+                         <?php if($_GET['page']==$i): ?>
+                                <strong class="currentPage"><?php echo $i;?></strong>
+                            <?php else: ?>
+                                <a href="<?php echo QA_HOME_URL . '?page='.$i ?>" class="page"><?php echo $i;?></a>
+                            <?php endif; ?>
                     <?php endfor; ?>
+
+                    <?php else: ?>
+                        <?php for ($i=1; $i<=$numPage; $i++) : ?>
+                            <?php if($_GET['page']==$i): ?>
+                            <strong class="currentPage"><?php echo $i;?></strong>
+                        <?php else: ?>
+                            <a href="<?php echo QA_HOME_URL . '?page='.$i ?>" class="page"><?php echo $i;?></a>
+                            <?php endif; ?>
+
+                    <?php endfor; ?>
+
+                        <?php if ($_GET['page']==$numPage): ?>
+                            <strong  class="currentPage">></strong>
+                        <?php else: ?>
+                            <a href="<?php echo QA_HOME_URL . '?page='.($_GET['page'] +1)?>" class="page">></a>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
 
