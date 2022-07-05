@@ -161,42 +161,29 @@ include_once 'inc/functions.php';
                 </div>
                 <?php endif; ?>
 
-                <!--------------------pages---------------------------->
-                <?php if ($numPage > 1):?>
+                <!--------------------pagination---------------------------->
+
                 <div class="pages">
-                    <?php if ($_GET['page']>1): ?>
-                        <a href="<?php echo QA_HOME_URL . '?page='.($_GET['page'] -1)?>" class="page"><</a>
-                    <?php else: ?>
-                        <strong  class="currentPage"><</strong>
-                    <?php endif; ?>
+                <?php $numPages = getNumPage($numQuestion);
+                /*--------------------back----------------------------*/
+                getPageBack($page);
+                /*--------------------numbers-------------------------*/
+                if ($numPages>=3){
+                    for ($i=1;$i<=3;$i++){
+                        echo "<a class='page' href='".getPageUrl($i)."'>$i</a>";
+                    }
+                }else{
+                    for ($i=1;$i<=$numPages;$i++){
+                        echo "<a class='page' href='".getPageUrl($i)."'>$i</a>";
+                    }
+                }
+                /*---------------------next---------------------------*/
+                getPageNext($numPages);
 
-                    <?php if ($numPage>3): ?>
-                      <?php for ($i=1; $i<=3; $i++) : ?>
-                         <?php if($_GET['page']==$i): ?>
-                                <strong class="currentPage"><?php echo $i;?></strong>
-                            <?php else: ?>
-                                <a href="<?php echo QA_HOME_URL . '?page='.$i ?>" class="page"><?php echo $i;?></a>
-                            <?php endif; ?>
-                    <?php endfor; ?>
+                ?>
 
-                    <?php else: ?>
-                        <?php for ($i=1; $i<=$numPage; $i++) : ?>
-                            <?php if($_GET['page']==$i): ?>
-                            <strong class="currentPage"><?php echo $i;?></strong>
-                        <?php else: ?>
-                            <a href="<?php echo QA_HOME_URL . '?page='.$i ?>" class="page"><?php echo $i;?></a>
-                            <?php endif; ?>
-
-                    <?php endfor; ?>
-
-                        <?php if ($_GET['page']==$numPage): ?>
-                            <strong  class="currentPage">></strong>
-                        <?php else: ?>
-                            <a href="<?php echo QA_HOME_URL . '?page='.($_GET['page'] +1)?>" class="page">></a>
-                        <?php endif; ?>
-                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
+
 
 
             </div>

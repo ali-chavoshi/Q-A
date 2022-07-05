@@ -387,3 +387,43 @@ function published($id)
         return false;
     }
 }
+
+
+//-----------------------------pagination functions-------------------------
+function getNumPage($numQuestion){
+    $numPages = ceil($numQuestion/QA_QUESTION_PER_PAGE);
+    return $numPages;
+}
+
+function getPageUrl($pageNumber){
+    $getParameters = array();
+    if (isset($_GET['status'])){
+        $getParameters['status'] = $_GET['status'];
+    }
+    if (isset($_GET['search'])){
+        $getParameters['search']= $_GET['search'];
+    }
+    $getParameters['page']=$pageNumber;
+    $str="?";
+    foreach ($getParameters as $key => $value){
+        $str .= "$key=$value&";
+    }
+    return QA_HOME_URL . trim($str,'&');
+}
+
+function getPageBack($page){
+    if ($page>1){
+        $back = ($page-1);
+        echo "<a class='page' href='".getPageUrl($back)."'><</a>";
+    }else{
+        echo "<strong class='currentPage'><</strong>";
+    }
+}
+
+function getPageNext($page){
+    if(isset($_GET['page'])&& $page==$_GET['page']){
+        echo "<strong class='currentPage'>></strong>";
+    }else {
+        echo "<a href='".getPageUrl($_GET['page']+1)."'class='page'>></a>";
+    }
+}

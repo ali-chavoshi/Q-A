@@ -35,7 +35,6 @@ if (isset($_GET['exit'])){
 //---- get questions and pagination-----------
 $page= (isset($_GET['page'])) ? $_GET['page'] : 1;
 $numQuestion = 0;
-$numPage = ceil($numQuestion/QA_QUESTION_PER_PAGE);
 $questions = '';
 
 if (isset($_GET['search']) && strlen($_GET['search'])>0){
@@ -54,6 +53,8 @@ if (isset($_GET['search']) && strlen($_GET['search'])>0){
     }
 
 }
+
+
 
 
 
