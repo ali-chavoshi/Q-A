@@ -128,7 +128,7 @@ function logAut()
     return true;
 }
 
-//-------------------get questions----------
+//-------------------get questions--------------------------------
 function getQuestion($status,$search,$page,&$numQuestion=0){
     global $db;
     $start = ($page-1) * QA_QUESTION_PER_PAGE;
@@ -148,14 +148,14 @@ function getQuestion($status,$search,$page,&$numQuestion=0){
         }
     }elseif (isAdmin() or (in_array(getValidstsatus($status),array('publish','answered')))){
         if ($search!=null){
-            $sql = "SELECT * FROM $db->questionTable WHERE status='$status' and text like '%$search%' order by desc limit $start,$offset";
+            $sql = "SELECT * FROM $db->questionTable WHERE status='$status' and text like '%$search%' order by create_date desc limit $start,$offset";
             $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status' and text like '%$search%'";
         }else{
-            $sql ="SELECT * FROM $db->questionTable WHERE status='$status' order by desc limit $start,$offset";
+            $sql ="SELECT * FROM $db->questionTable WHERE status='$status' order by create_date desc limit $start,$offset";
             $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status'";
         }
     }else{
-        $sql = "SELECT * FROM $db->questionTable WHERE status!='pending' order by desc limit $start,$offset";
+        $sql = "SELECT * FROM $db->questionTable WHERE status!='pending' order by create_date desc limit $start,$offset";
         $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status!='pending'";
     }
     $result = $db-> query($sql);
@@ -186,136 +186,6 @@ function isValidStatus($status){
     }else {
         return false;
     }
-}
-
-
-
-//-------------------get question old -----------
-function getQuestions($page = 1, &$numPages = null, &$errorMasage = null)
-{
-    global $db;
-
-    $start = ($page - 1) * QA_QUESTION_PER_PAGE;
-    $end = QA_QUESTION_PER_PAGE;
-
-    /* ----------------------------admin------------------------------------*/
-    if (isAdmin()) {
-
-        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status'] != 'All') {
-            $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
-            $status = $_GET['status'];
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND text LIKE '%" . $srchInp . "%'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-            } else {
-                $errorMasage .= "No query found for your search !!";
-            }
-
-        } elseif (isset($_GET['status']) && $_GET['status'] != 'All') {
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' LIMIT $start,$end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-
-            }
-
-
-        } elseif (isset($_GET['srchInp']) && $_GET['srchInp'] != null) {
-            $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE text LIKE '%" . $srchInp . "%' LIMIT $start , $end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE text LIKE '%" . $srchInp . "%'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-
-            } else {
-                $errorMasage .= "No query found for your search !!";
-
-            }
-        } else {
-            $result = $db->query("SELECT * FROM `$db->questionTable` LIMIT $start , $end ");
-            $result->fetch_all(1);
-            $numRowsstmnt = $db->query("SELECT * FROM `$db->questionTable`");
-            $numRows = $numRowsstmnt->fetch_all();
-            $countResult = sizeof($numRows);
-            $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-            return $result;
-        }
-
-        /* ------------------------------- not admin------------------------------------------------*/
-    } else {
-
-        if (isset($_GET['status']) && isset($_GET['srchInp']) && $_GET['srchInp'] != null && $_GET['status'] != 'All') {
-            $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
-            $status = $_GET['status'];
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "'AND status!='pending' AND text LIKE '%" . $srchInp . "%' LIMIT $start ,$end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $status . "' AND status!='pending' AND text LIKE '%" . $srchInp . "%'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-            } else {
-                $errorMasage .= "No query found for your search !!";
-
-            }
-
-        } elseif (isset($_GET['status']) && $_GET['status'] != 'All') {
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' AND status!='pending' LIMIT $start,$end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE status='" . $_GET['status'] . "' AND status!='pending'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-
-            }
-
-
-        } elseif (isset($_GET['srchInp']) && $_GET['srchInp'] != null) {
-            $srchInp = str_ireplace(' ', '%', $_GET['srchInp']);
-            $result = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE text LIKE '%" . $srchInp . "%' LIMIT $start , $end");
-            if ($result) {
-                $result->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `" . $db->questionTable . "` WHERE text LIKE '%" . $srchInp . "%'");
-                $rows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($rows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-
-            } else {
-                $errorMasage .= "No query found for your search !!";
-
-            }
-        } else {
-            $stmnt = $db->query("SELECT * FROM `$db->questionTable` WHERE status !='pending' LIMIT $start,$end ;");
-            if ($stmnt) {
-                $result = $stmnt->fetch_all(1);
-                $numRowsStmnt = $db->query("SELECT * FROM `$db->questionTable` WHERE status !='pending';");
-                $numRows = $numRowsStmnt->fetch_all();
-                $countResult = sizeof($numRows);
-                $numPages .= ceil($countResult / QA_QUESTION_PER_PAGE);
-                return $result;
-            }
-
-        }
-
-    }
-    return false;
 }
 
 // ------------get answers-------------
@@ -424,6 +294,12 @@ function getPageNext($page){
     if(isset($_GET['page'])&& $page==$_GET['page']){
         echo "<strong class='currentPage'>></strong>";
     }else {
-        echo "<a href='".getPageUrl($_GET['page']+1)."'class='page'>></a>";
+        if(isset($_GET['page'])){
+
+            echo "<a href='".getPageUrl($_GET['page']+1)."'class='page'>></a>";
+        }else{
+            echo "<a href='".getPageUrl(2)."'class='page'>></a>";
+
+        }
     }
 }

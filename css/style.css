@@ -447,6 +447,7 @@ a.page {
     padding: 0px 11px;
     border-radius: 5px;
     text-decoration: none;
+    margin: 5px;
 }
 a.page:hover{
     color: #444;
@@ -462,4 +463,5 @@ a.page:hover{
     padding: 0px 11px;
     border-radius: 5px;
     text-decoration: none;
+    margin: 5px;
 }
