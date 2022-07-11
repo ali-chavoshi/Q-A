@@ -167,6 +167,8 @@ select.status {
 
 .content {
     flex: 70%;
+    overflow: auto;
+    max-height: 401px;
 }
 .formQuestion {
     padding: 20px;

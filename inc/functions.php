@@ -129,39 +129,40 @@ function logAut()
 }
 
 //-------------------get questions--------------------------------
-function getQuestion($status,$search,$page,&$numQuestion=0){
+function getQuestion($status, $search, $page, &$numQuestion = 0)
+{
     global $db;
-    $start = ($page-1) * QA_QUESTION_PER_PAGE;
+    $start = ($page - 1) * QA_QUESTION_PER_PAGE;
     $offset = QA_QUESTION_PER_PAGE;
-    if($status == 'all'){
-        if(!isAdmin()){
+    if ($status == 'all') {
+        if (!isAdmin()) {
             $whereStr = "status!='pending'";
-        }else{
+        } else {
             $whereStr = 1;
         }
-        if ($search!=null){
+        if ($search != null) {
             $sql = "SELECT * FROM $db->questionTable WHERE $whereStr and text like '%$search%' order by create_date desc limit $start,$offset;";
-            $countSql ="SELECT count(*) as c from $db->questionTable WHERE $whereStr and text like '%$search%'";
-        }else {
+            $countSql = "SELECT count(*) as c from $db->questionTable WHERE $whereStr and text like '%$search%'";
+        } else {
             $sql = "SELECT * FROM $db->questionTable where $whereStr order by create_date desc limit $start,$offset;";
             $countSql = "SELECT count(*) as c FROM $db->questionTable where $whereStr";
         }
-    }elseif (isAdmin() or (in_array(getValidstsatus($status),array('publish','answered')))){
-        if ($search!=null){
+    } elseif (isAdmin() or (in_array(getValidstsatus($status), array('publish', 'answered')))) {
+        if ($search != null) {
             $sql = "SELECT * FROM $db->questionTable WHERE status='$status' and text like '%$search%' order by create_date desc limit $start,$offset";
             $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status' and text like '%$search%'";
-        }else{
-            $sql ="SELECT * FROM $db->questionTable WHERE status='$status' order by create_date desc limit $start,$offset";
+        } else {
+            $sql = "SELECT * FROM $db->questionTable WHERE status='$status' order by create_date desc limit $start,$offset";
             $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status='$status'";
         }
-    }else{
+    } else {
         $sql = "SELECT * FROM $db->questionTable WHERE status!='pending' order by create_date desc limit $start,$offset";
         $countSql = "SELECT count(*) as c FROM $db->questionTable WHERE status!='pending'";
     }
-    $result = $db-> query($sql);
-    if ($result){
+    $result = $db->query($sql);
+    if ($result) {
         $question = $result->fetch_all(1);
-        $numQuestion = $db -> query($countSql)->fetch_object()->c;
+        $numQuestion = $db->query($countSql)->fetch_object()->c;
         return $question;
     }
     return null;
@@ -171,19 +172,21 @@ function getQuestion($status,$search,$page,&$numQuestion=0){
 
 
 //-------------------get valid status-------------------------------
-function getValidstsatus($status){
-    if (isValidStatus($status)){
+function getValidstsatus($status)
+{
+    if (isValidStatus($status)) {
         return true;
-    }else{
+    } else {
         return "all";
     }
 }
 
-function isValidStatus($status){
-    $statusArr = array ('pending','publish','answered');
-    if (in_array($status,$statusArr)){
+function isValidStatus($status)
+{
+    $statusArr = array('pending', 'publish', 'answered');
+    if (in_array($status, $statusArr)) {
         return true;
-    }else {
+    } else {
         return false;
     }
 }
@@ -210,22 +213,24 @@ function addAnswer($id, $txtA, &$errorMassage)
     $admName = $_SESSION['username'];
     $stmnt = $db->prepare("INSERT INTO `answers`(`qid`, `text`, `admname`) VALUES (?,?,?)");
     if ($stmnt) {
-        $stmnt->bind_param("iss",$id,$txtA,$admName);
+        $stmnt->bind_param("iss", $id, $txtA, $admName);
         $stmnt->execute();
-        $state= $db->query("UPDATE `" . $db->questionTable . "`SET `status` = 'answered' WHERE `id` =" . $id . ";");
+        $state = $db->query("UPDATE `" . $db->questionTable . "`SET `status` = 'answered' WHERE `id` =" . $id . ";");
         return true;
     } else {
         $errorMassage .= "An error occurred while registering your Answer !!";
         return false;
     }
 }
-function deletAnswer($id,$errorMasage){
+
+function deletAnswer($id, $errorMasage)
+{
     global $db;
-    $stmnt = $db->query("DELETE FROM `".$db->answersTable."` WHERE id=".$id.";");
-    if ($stmnt){
+    $stmnt = $db->query("DELETE FROM `" . $db->answersTable . "` WHERE id=" . $id . ";");
+    if ($stmnt) {
         return true;
-    }else{
-        return  false;
+    } else {
+        return false;
         $errorMasage .= "An Error ccourred While Deleting Your Answer!!!";
     }
 }
@@ -260,45 +265,49 @@ function published($id)
 
 
 //-----------------------------pagination functions-------------------------
-function getNumPage($numQuestion){
-    $numPages = ceil($numQuestion/QA_QUESTION_PER_PAGE);
+function getNumPage($numQuestion)
+{
+    $numPages = ceil($numQuestion / QA_QUESTION_PER_PAGE);
     return $numPages;
 }
 
-function getPageUrl($pageNumber){
+function getPageUrl($pageNumber)
+{
     $getParameters = array();
-    if (isset($_GET['status'])){
+    if (isset($_GET['status'])) {
         $getParameters['status'] = $_GET['status'];
     }
-    if (isset($_GET['search'])){
-        $getParameters['search']= $_GET['search'];
+    if (isset($_GET['search'])) {
+        $getParameters['search'] = $_GET['search'];
     }
-    $getParameters['page']=$pageNumber;
-    $str="?";
-    foreach ($getParameters as $key => $value){
+    $getParameters['page'] = $pageNumber;
+    $str = "?";
+    foreach ($getParameters as $key => $value) {
         $str .= "$key=$value&";
     }
-    return QA_HOME_URL . trim($str,'&');
+    return QA_HOME_URL . trim($str, '&');
 }
 
-function getPageBack($page){
-    if ($page>1){
-        $back = ($page-1);
-        echo "<a class='page' href='".getPageUrl($back)."'><</a>";
-    }else{
+function getPageBack($page)
+{
+    if ($page > 1) {
+        $back = ($page - 1);
+        echo "<a class='page' href='" . getPageUrl($back) . "'><</a>";
+    } else {
         echo "<strong class='currentPage'><</strong>";
     }
 }
 
-function getPageNext($page){
-    if(isset($_GET['page'])&& $page==$_GET['page']){
+function getPageNext($page)
+{
+    if (isset($_GET['page']) && $page == $_GET['page']) {
         echo "<strong class='currentPage'>></strong>";
-    }else {
-        if(isset($_GET['page'])){
+    } else {
+        if (isset($_GET['page'])) {
 
-            echo "<a href='".getPageUrl($_GET['page']+1)."'class='page'>></a>";
-        }else{
-            echo "<a href='".getPageUrl(2)."'class='page'>></a>";
+            echo "<a href='" . getPageUrl($_GET['page'] + 1) . "'class='page'>></a>";
+        } else {
+            echo "<a href='" . getPageUrl(2) . "'class='page'>></a>";
 
         }
     }
